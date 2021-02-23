@@ -35,7 +35,11 @@ private static final Logger log = LoggerFactory.getLogger(ProductoRestController
 	
 	@GetMapping("/{id}")
 	public Mono<Producto> show(@PathVariable String id) {
-		Mono<Producto> producto = dao.findById(id);
+		Flux<Producto> productos = dao.findAll();
+		Mono<Producto> producto = productos
+				.filter(p -> p.getId().equals(id)).next()
+				.doOnNext(p-> log.info(p.getNombre()));
+		
 		return producto;
 	}
 
