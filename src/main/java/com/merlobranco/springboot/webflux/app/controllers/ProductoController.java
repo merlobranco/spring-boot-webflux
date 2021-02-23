@@ -43,9 +43,6 @@ public class ProductoController {
 	
 	@GetMapping("/listar-datadriver")
 	public String listarDataDriver(Model model) {
-		
-		// There is no need for subscribing, Thymeleaf will do it for us
-		// The thymeleaf template is the observer subscribed to the observable
 		Flux<Producto> productos = dao.findAll().map(producto-> {
 			producto.setNombre(producto.getNombre().toUpperCase());
 			return producto;
@@ -59,5 +56,21 @@ public class ProductoController {
 		
 		return "listar";
 	}
+	
+	@GetMapping("/listar-full")
+	public String listarFull(Model model) {
+		Flux<Producto> productos = dao.findAll().map(producto-> {
+			producto.setNombre(producto.getNombre().toUpperCase());
+			return producto;
+		}).repeat(5000);
+		
+		
+		model.addAttribute("titulo", "Listado de productos");
+		model.addAttribute("productos", productos);
+		
+		return "listar";
+	}
+	
+	
 
 }
